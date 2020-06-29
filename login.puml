@@ -23,10 +23,10 @@ UserManagement -> Database: Check account exist
 activate Database
 Database --> UserManagement: Verify result
 deactivate Database
+UserManagement --> LoginPage: Verify result
+deactivate UserManagement
 
 alt Verify success login = true
-  UserManagement --> LoginPage: Verify result
-  deactivate UserManagement
   LoginPage -> MainPage: Redirect to home page
   activate MainPage
   deactivate MainPage
@@ -34,6 +34,7 @@ alt Verify success login = true
   deactivate LoginPage
   deactivate UserLogin
 else Verify success login = false
+  autonumber 8
   LoginPage --> UserLogin: Failed login message
   activate LoginPage
   deactivate LoginPage

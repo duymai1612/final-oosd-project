@@ -1,0 +1,68 @@
+@startuml Manage Roles flow
+
+actor Admin
+boundary ManageRolesPage
+control RoleManagement
+entity Role
+database Database
+
+group Create a role
+  autonumber
+  activate Admin
+  Admin -> ManageRolesPage: Create a role
+  activate ManageRolesPage
+  ManageRolesPage -> Role: Create a Role()
+  activate Role
+  deactivate ManageRolesPage
+  Role --> ManageRolesPage: Return a new Role()
+  deactivate Role
+  activate ManageRolesPage
+  ManageRolesPage -> RoleManagement: Verify duplicated Role
+  activate RoleManagement
+  RoleManagement -> Database: Check role exist
+  activate Database
+  Database --> RoleManagement: Verify result
+  deactivate Database
+
+  alt Verify Role duplicated = false
+    RoleManagement -> Database: Insert new role
+    activate Database
+    Database --> RoleManagement: Inserted role
+    deactivate Database
+    RoleManagement --> ManageRolesPage: Inserted role
+    deactivate RoleManagement
+    ManageRolesPage --> Admin: Successful create message
+    deactivate ManageRolesPage
+    deactivate Admin
+  else Verify Role duplicated = true
+    autonumber 7
+    RoleManagement --> ManageRolesPage: Error message
+    activate RoleManagement
+    deactivate RoleManagement
+    activate ManageRolesPage
+    ManageRolesPage --> Admin: Failed create message
+    deactivate ManageRolesPage
+    activate Admin
+    deactivate Admin
+  end
+  deactivate Admin
+end
+
+group Update/Delete a role
+  autonumber
+  Admin -> ManageRolesPage: Update/Delete a role
+  activate Admin
+  activate ManageRolesPage
+  ManageRolesPage -> RoleManagement: New change payload
+  activate RoleManagement
+  RoleManagement -> Database: Save to database
+  activate Database
+  Database --> RoleManagement: Changed result
+  deactivate Database
+  RoleManagement --> ManageRolesPage: Updated roles
+  deactivate RoleManagement
+  ManageRolesPage --> Admin: Display new role list
+  deactivate ManageRolesPage
+end
+
+@enduml

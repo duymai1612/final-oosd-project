@@ -23,10 +23,10 @@ UserManagement -> Database: Check account exist
 activate Database
 Database --> UserManagement: Verify result
 deactivate Database
+UserManagement --> SignUpPage: Verify result
+deactivate UserManagement
 
 alt Verify user duplicated = false
-  UserManagement --> SignUpPage: Verify result
-  deactivate UserManagement
   SignUpPage -> LoginPage: Redirect to login page
   activate LoginPage
   deactivate LoginPage
@@ -34,6 +34,7 @@ alt Verify user duplicated = false
   deactivate SignUpPage
   deactivate UserSignUp
 else Verify user duplicated = true
+  autonumber 8
   SignUpPage --> UserSignUp: Failed sign up message
   activate SignUpPage
   deactivate SignUpPage
