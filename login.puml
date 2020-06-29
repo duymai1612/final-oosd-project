@@ -1,5 +1,7 @@
 @startuml Login flow
 
+title User Login flow
+
 actor UserLogin
 boundary LoginPage
 control UserManagement

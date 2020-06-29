@@ -1,0 +1,51 @@
+@startuml Add Course flow
+
+title Instructor Add Course flow
+
+actor Instructor
+boundary AddCoursePage
+control CourseManagement
+entity Course
+database Database
+
+autonumber
+activate Instructor
+Instructor -> AddCoursePage: Enter new course data and submit
+activate AddCoursePage
+AddCoursePage -> Course: Create a Course()
+activate Course
+deactivate AddCoursePage
+Course --> AddCoursePage: Return a new Course()
+deactivate Course
+activate AddCoursePage
+AddCoursePage -> CourseManagement: Verify duplicated Course
+activate CourseManagement
+CourseManagement -> Database: Check course exist
+activate Database
+Database --> CourseManagement: Verify result
+deactivate Database
+
+alt Verify Course duplicated = false
+  CourseManagement -> Database: Insert new course
+  activate Database
+  Database --> CourseManagement: Inserted course
+  deactivate Database
+  CourseManagement --> AddCoursePage: Inserted course
+  deactivate CourseManagement
+  AddCoursePage --> Instructor: Successful create message
+  deactivate AddCoursePage
+  deactivate Instructor
+else Verify Course duplicated = true
+  autonumber 7
+  CourseManagement --> AddCoursePage: Error message
+  activate CourseManagement
+  deactivate CourseManagement
+  activate AddCoursePage
+  AddCoursePage --> Instructor: Failed create message
+  deactivate AddCoursePage
+  activate Instructor
+  deactivate Instructor
+end
+deactivate Instructor
+
+@enduml

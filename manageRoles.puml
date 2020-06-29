@@ -1,5 +1,7 @@
 @startuml Manage Roles flow
 
+title Admin Manages Roles flow
+
 actor Admin
 boundary ManageRolesPage
 control RoleManagement
@@ -59,7 +61,7 @@ group Update/Delete a role
   activate Database
   Database --> RoleManagement: Changed result
   deactivate Database
-  RoleManagement --> ManageRolesPage: Updated roles
+  RoleManagement --> ManageRolesPage: Updated role
   deactivate RoleManagement
   ManageRolesPage --> Admin: Display new role list
   deactivate ManageRolesPage

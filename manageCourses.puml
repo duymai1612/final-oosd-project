@@ -1,0 +1,70 @@
+@startuml Manage Courses flow
+
+title Admin Manages Courses flow
+
+actor Admin
+boundary ManageCoursesPage
+control CourseManagement
+entity Course
+database Database
+
+group Create a course
+  autonumber
+  activate Admin
+  Admin -> ManageCoursesPage: Create a course
+  activate ManageCoursesPage
+  ManageCoursesPage -> Course: Create a Course()
+  activate Course
+  deactivate ManageCoursesPage
+  Course --> ManageCoursesPage: Return a new Course()
+  deactivate Course
+  activate ManageCoursesPage
+  ManageCoursesPage -> CourseManagement: Verify duplicated Course
+  activate CourseManagement
+  CourseManagement -> Database: Check course exist
+  activate Database
+  Database --> CourseManagement: Verify result
+  deactivate Database
+
+  alt Verify Course duplicated = false
+    CourseManagement -> Database: Insert new course
+    activate Database
+    Database --> CourseManagement: Inserted course
+    deactivate Database
+    CourseManagement --> ManageCoursesPage: Inserted course
+    deactivate CourseManagement
+    ManageCoursesPage --> Admin: Successful create message
+    deactivate ManageCoursesPage
+    deactivate Admin
+  else Verify Course duplicated = true
+    autonumber 7
+    CourseManagement --> ManageCoursesPage: Error message
+    activate CourseManagement
+    deactivate CourseManagement
+    activate ManageCoursesPage
+    ManageCoursesPage --> Admin: Failed create message
+    deactivate ManageCoursesPage
+    activate Admin
+    deactivate Admin
+  end
+  deactivate Admin
+end
+
+group Update/Delete a course
+  autonumber
+  Admin -> ManageCoursesPage: Update/Delete a course
+  activate Admin
+  activate ManageCoursesPage
+  ManageCoursesPage -> CourseManagement: New change payload
+  activate CourseManagement
+  CourseManagement -> Database: Save to database
+  activate Database
+  Database --> CourseManagement: Changed result
+  deactivate Database
+  CourseManagement --> ManageCoursesPage: Updated course
+  deactivate CourseManagement
+  ManageCoursesPage --> Admin: Display new course list
+  deactivate ManageCoursesPage
+end
+
+@enduml

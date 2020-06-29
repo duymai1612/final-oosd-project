@@ -1,0 +1,70 @@
+@startuml Manage Users flow
+
+title Admin Manages Users flow
+
+actor Admin
+boundary ManageUsersPage
+control UserManagement
+entity User
+database Database
+
+group Create a user
+  autonumber
+  activate Admin
+  Admin -> ManageUsersPage: Create a user
+  activate ManageUsersPage
+  ManageUsersPage -> User: Create a User()
+  activate User
+  deactivate ManageUsersPage
+  User --> ManageUsersPage: Return a new User()
+  deactivate User
+  activate ManageUsersPage
+  ManageUsersPage -> UserManagement: Verify duplicated User
+  activate UserManagement
+  UserManagement -> Database: Check user exist
+  activate Database
+  Database --> UserManagement: Verify result
+  deactivate Database
+
+  alt Verify User duplicated = false
+    UserManagement -> Database: Insert new user
+    activate Database
+    Database --> UserManagement: Inserted user
+    deactivate Database
+    UserManagement --> ManageUsersPage: Inserted user
+    deactivate UserManagement
+    ManageUsersPage --> Admin: Successful create message
+    deactivate ManageUsersPage
+    deactivate Admin
+  else Verify User duplicated = true
+    autonumber 7
+    UserManagement --> ManageUsersPage: Error message
+    activate UserManagement
+    deactivate UserManagement
+    activate ManageUsersPage
+    ManageUsersPage --> Admin: Failed create message
+    deactivate ManageUsersPage
+    activate Admin
+    deactivate Admin
+  end
+  deactivate Admin
+end
+
+group Update/Delete a user
+  autonumber
+  Admin -> ManageUsersPage: Update/Delete a user
+  activate Admin
+  activate ManageUsersPage
+  ManageUsersPage -> UserManagement: New change payload
+  activate UserManagement
+  UserManagement -> Database: Save to database
+  activate Database
+  Database --> UserManagement: Changed result
+  deactivate Database
+  UserManagement --> ManageUsersPage: Updated user
+  deactivate UserManagement
+  ManageUsersPage --> Admin: Display new user list
+  deactivate ManageUsersPage
+end
+
+@enduml

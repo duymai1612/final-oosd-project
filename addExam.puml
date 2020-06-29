@@ -1,0 +1,51 @@
+@startuml Add Exam flow
+
+title Instructor Add Exam flow
+
+actor Instructor
+boundary AddExamPage
+control ExamManagement
+entity Exam
+database Database
+
+autonumber
+activate Instructor
+Instructor -> AddExamPage: Enter new exam data and submit
+activate AddExamPage
+AddExamPage -> Exam: Create a Exam()
+activate Exam
+deactivate AddExamPage
+Exam --> AddExamPage: Return a new Exam()
+deactivate Exam
+activate AddExamPage
+AddExamPage -> ExamManagement: Verify duplicated Exam
+activate ExamManagement
+ExamManagement -> Database: Check exam exist
+activate Database
+Database --> ExamManagement: Verify result
+deactivate Database
+
+alt Verify Exam duplicated = false
+  ExamManagement -> Database: Insert new exam
+  activate Database
+  Database --> ExamManagement: Inserted exam
+  deactivate Database
+  ExamManagement --> AddExamPage: Inserted exam
+  deactivate ExamManagement
+  AddExamPage --> Instructor: Successful create message
+  deactivate AddExamPage
+  deactivate Instructor
+else Verify Exam duplicated = true
+  autonumber 7
+  ExamManagement --> AddExamPage: Error message
+  activate ExamManagement
+  deactivate ExamManagement
+  activate AddExamPage
+  AddExamPage --> Instructor: Failed create message
+  deactivate AddExamPage
+  activate Instructor
+  deactivate Instructor
+end
+deactivate Instructor
+
+@enduml

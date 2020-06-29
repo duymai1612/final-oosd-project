@@ -1,0 +1,41 @@
+@startuml View Result flow
+
+title Student Views Result flow
+
+actor Student
+boundary ViewResultPage
+control ResultManagement
+entity Result
+database Database
+
+autonumber
+activate Student
+Student -> ViewResultPage: Choose an exam result to view detail
+activate ViewResultPage
+ViewResultPage -> ResultManagement: Get Result data
+activate ResultManagement
+ResultManagement -> Database: Find result
+activate Database
+Database --> ResultManagement: result data
+deactivate Database
+
+alt Result found = true
+  ResultManagement --> ViewResultPage: Result data
+  deactivate ResultManagement
+  ViewResultPage --> Student: Display result detail
+  deactivate ViewResultPage
+  deactivate Student
+else Result found = false
+  autonumber 7
+  ResultManagement --> ViewResultPage: Error message
+  activate ResultManagement
+  deactivate ResultManagement
+  activate ViewResultPage
+  ViewResultPage --> Student: View result failed message
+  deactivate ViewResultPage
+  activate Student
+  deactivate Student
+end
+deactivate Student
+
+@enduml

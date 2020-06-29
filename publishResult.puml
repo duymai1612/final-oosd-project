@@ -1,0 +1,38 @@
+@startuml Publishes Result flow
+
+title Instructor Publishes Result flow
+
+actor Instructor
+boundary PublishResultPage
+control ResultManagement
+entity Result
+actor Students
+database Database
+
+autonumber
+activate Instructor
+Instructor -> PublishResultPage: Enter exam marks for attended students and submit
+activate PublishResultPage
+PublishResultPage -> Result: Create many Result() for many students
+activate Result
+deactivate PublishResultPage
+Result --> PublishResultPage: Return all new Result()
+deactivate Result
+activate PublishResultPage
+PublishResultPage -> ResultManagement: Verify duplicated Result
+activate ResultManagement
+
+ResultManagement -> Database: Save to database
+activate Database
+Database --> ResultManagement: Saved results
+deactivate Database
+ResultManagement -> Students: Publish marks to students through email
+activate Students
+deactivate Students
+ResultManagement --> PublishResultPage: Saved results
+deactivate ResultManagement
+PublishResultPage --> Instructor: Successful publish message
+deactivate PublishResultPage
+deactivate Instructor
+
+@enduml

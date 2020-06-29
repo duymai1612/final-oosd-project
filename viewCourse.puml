@@ -1,0 +1,41 @@
+@startuml View Course flow
+
+title Student Views Course flow
+
+actor Student
+boundary ViewCoursePage
+control CourseManagement
+entity Course
+database Database
+
+autonumber
+activate Student
+Student -> ViewCoursePage: Choose a course to view detail
+activate ViewCoursePage
+ViewCoursePage -> CourseManagement: Get Course data
+activate CourseManagement
+CourseManagement -> Database: Find course
+activate Database
+Database --> CourseManagement: course data
+deactivate Database
+
+alt Course found = true
+  CourseManagement --> ViewCoursePage: Course data
+  deactivate CourseManagement
+  ViewCoursePage --> Student: Display course detail
+  deactivate ViewCoursePage
+  deactivate Student
+else Course found = false
+  autonumber 7
+  CourseManagement --> ViewCoursePage: Error message
+  activate CourseManagement
+  deactivate CourseManagement
+  activate ViewCoursePage
+  ViewCoursePage --> Student: View course failed message
+  deactivate ViewCoursePage
+  activate Student
+  deactivate Student
+end
+deactivate Student
+
+@enduml

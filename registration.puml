@@ -1,5 +1,7 @@
 @startuml Registration flow
 
+title User Registration flow
+
 actor UserSignUp
 boundary SignUpPage
 control UserManagement
