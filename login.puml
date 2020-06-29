@@ -1,0 +1,44 @@
+@startuml Login flow
+
+actor UserLogin
+boundary LoginPage
+control UserManagement
+entity User
+boundary MainPage
+database Database
+
+autonumber
+activate UserLogin
+UserLogin -> LoginPage: User enter username and password
+activate LoginPage
+LoginPage -> User: Create a User()
+activate User
+deactivate LoginPage
+User --> LoginPage: Return a new User()
+deactivate User
+activate LoginPage
+LoginPage -> UserManagement: Verify user
+activate UserManagement
+UserManagement -> Database: Check account exist
+activate Database
+Database --> UserManagement: Verify result
+deactivate Database
+
+alt Verify success login = true
+  UserManagement --> LoginPage: Verify result
+  deactivate UserManagement
+  LoginPage -> MainPage: Redirect to home page
+  activate MainPage
+  deactivate MainPage
+  LoginPage --> UserLogin: Successful login message
+  deactivate LoginPage
+  deactivate UserLogin
+else Verify success login = false
+  LoginPage --> UserLogin: Failed login message
+  activate LoginPage
+  deactivate LoginPage
+  activate UserLogin
+  deactivate UserLogin
+end
+
+@enduml

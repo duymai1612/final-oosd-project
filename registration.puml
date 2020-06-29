@@ -1,0 +1,44 @@
+@startuml Registration flow
+
+actor UserSignUp
+boundary SignUpPage
+control UserManagement
+entity User
+boundary LoginPage
+database Database
+
+autonumber
+activate UserSignUp
+UserSignUp -> SignUpPage: User enter username, password \nand confirm password
+activate SignUpPage
+SignUpPage -> User: Create a User()
+activate User
+deactivate SignUpPage
+User --> SignUpPage: Return a new User()
+deactivate User
+activate SignUpPage
+SignUpPage -> UserManagement: Verify duplicated user
+activate UserManagement
+UserManagement -> Database: Check account exist
+activate Database
+Database --> UserManagement: Verify result
+deactivate Database
+
+alt Verify user duplicated = false
+  UserManagement --> SignUpPage: Verify result
+  deactivate UserManagement
+  SignUpPage -> LoginPage: Redirect to login page
+  activate LoginPage
+  deactivate LoginPage
+  SignUpPage --> UserSignUp: Successful sign up message
+  deactivate SignUpPage
+  deactivate UserSignUp
+else Verify user duplicated = true
+  SignUpPage --> UserSignUp: Failed sign up message
+  activate SignUpPage
+  deactivate SignUpPage
+  activate UserSignUp
+  deactivate UserSignUp
+end
+
+@enduml
